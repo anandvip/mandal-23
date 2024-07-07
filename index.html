@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meditation Mandal Tracker</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .dashboard-item {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .circular-progress {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+
+        .circular-progress svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .circular-progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .session-entry {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .editable-notes {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .dark-mode {
+            --background-color: #333333;
+            --text-color: #ffffff;
+            --border-color: #555555;
+        }
+
+        .dark-mode .card, .dark-mode .dashboard-item, .dark-mode .session-entry {
+            background-color: #444444;
+        }
+
+        .dark-mode .editable-notes {
+            background-color: #555555;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #meditationVisualization {
+            width: 100%;
+            height: 200px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        #onlineIndicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .online {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .offline {
+            background-color: #F44336;
+            color: white;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: white;
+            padding: 8px;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        .youtube-preview {
+            position: relative;
+            display: inline-block;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .play-button:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="container">
+        <header role="banner">
+            <h1>Meditation <span class="logo">Mandal Tracker</span></h1>
+            <h2>Namaskaram, <span id="userName" contenteditable="true" aria-label="Your name" class="logo">Your Name</span>!</h2>
+        </header>
+
+        <nav role="navigation">
+            <button id="themeToggle" aria-label="Toggle dark mode">Toggle Dark Mode</button>
+            <button id="giveFeedback" aria-label="Give feedback">Give Feedback</button>
+            <button id="addPastSession" aria-label="Add past session">Add Past Session</button>
+            <button id="exportData" aria-label="Export data">Export Data</button>
+            <input type="file" id="importData" accept=".json" aria-label="Import data">
+            <label for="importData">Import Data</label>
+        </nav>
+
+        <div id="onlineIndicator"></div>
+
+        <main id="main-content" role="main">
+            <div id="mandalCreation" class="card">
+                <h2>Create New Mandal</h2>
+                <input type="text" id="mandalName" placeholder="Mandal Name" aria-label="Mandal Name">
+                <select id="mandalDuration" aria-label="Mandal Duration">
+                    <option value="48">48 Days</option>
+                    <option value="90">90 Days</option>
+                </select>
+                <input type="date" id="startDate" aria-label="Start Date">
+                <button id="createMandal" aria-label="Create Mandal">Create Mandal</button>
+            </div>
+
+            <div id="activeMandalInfo" class="card" style="display: none;">
+                <h2>Active Mandal: <span id="activeMandalName"></span></h2>
+                <div id="dashboard" aria-live="polite"></div>
+                <div class="dashboard-item">
+                    <h3>Current Session</h3>
+                    <div id="timer" aria-live="polite">00:00:00</div>
+                    <div class="timer-controls">
+                        <button id="startSession" aria-label="Start Session">Start Session</button>
+                        <button id="stopSession" style="display: none;" aria-label="Stop Session">Stop Session</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Meditation Progress Visualization</h3>
+                <canvas id="meditationVisualization"></canvas>
+            </div>
+
+            <div id="statsContainer" class="card"></div>
+
+            <div class="media-embed card">
+                <h3>Meditation Media</h3>
+                <input type="text" id="mediaUrl" placeholder="Enter YouTube or SoundCloud URL" aria-label="Media URL">
+                <button id="embedMedia" aria-label="Embed Media">Embed Media</button>
+                <div id="mediaContainer"></div>
+            </div>
+
+            <div class="playlist-section card">
+                <h3>My Meditation Playlist</h3>
+                <div class="playlist-categories">
+                    <div class="playlist-category">
+                        <h4>YouTube</h4>
+                        <ul id="youtubePlaylist"></ul>
+                    </div>
+                    <div class="playlist-category">
+                        <h4>SoundCloud</h4>
+                        <ul id="soundcloudPlaylist"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-links card">
+                <a href="https://www.youtube.com/results?search_query=guided+meditation" target="_blank">Search YouTube for Guided Meditations</a>
+                <a href="https://soundcloud.com/search?q=guided%20meditation" target="_blank">Search SoundCloud for Guided Meditations</a>
+            </div>
+
+            <div id="sessionHistory" class="card" style="display: none;">
+                <h2>Session History</h2>
+                <div id="historyControls">
+                    <input type="text" id="searchInput" placeholder="Search notes..." aria-label="Search notes">
+                    <button id="sortByDate" aria-label="Sort by Date">Sort by Date</button>
+                </div>
+                <div id="historyContent" aria-live="polite"></div>
+            </div>
+        </main>
+
+        <div id="pastSessionModal" class="modal" aria-hidden="true">
+            <div class="modal-content">
+                <span class="close" aria-label="Close">&times;</span>
+                <h2>Add Past Sessions</h2>
+                <form id="pastSessionForm">
+                    <label for="pastDate">Date:</label>
+                    <input type="date" id="pastDate" required aria-label="Past session date">
+                    <div>
+                        <label>
+                            <input type="checkbox" id="morningSession" checked aria-label="Morning session"> Morning Session
+                        </label>
+                    </div>
+                    <div>
+                        <label>
+                            <input type="checkbox" id="eveningSession" checked aria-label="Evening session"> Evening Session
+                        </label>
+                    </div>
+                    <button type="submit" aria-label="Add Sessions">Add Sessions</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="feedbackModal" class="modal" aria-hidden="true">
+            <div class="modal-content">
+                <span class="close" aria-label="Close">&times;</span>
+                <h2>Provide Feedback</h2>
+                <textarea id="feedbackText" rows="4" placeholder="Enter your feedback here..." aria-label="Feedback text"></textarea>
+                <button id="submitFeedback" aria-label="Submit Feedback">Submit Feedback</button>
+            </div>
+        </div>
+
+        <div id="toast" class="toast" aria-live="assertive"></div>
+    </div>
+
+    <script src="meditation-tracker.js"></script>
+</body>
+</html>
